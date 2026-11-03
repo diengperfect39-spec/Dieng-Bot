@@ -21,14 +21,12 @@ def sw():
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return """<!DOCTYPE html>
-<html lang=fr><head><meta charset=utf-8>
+    return """<!DOCTYPE html><html lang=fr><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <link rel=manifest href=/manifest.json>
 <meta name=theme-color content=#00c853>
 <title>Dieng V13</title>
-<style>
-body{margin:0;font-family:sans-serif;background:#06120e;color:#fff}
+<style>body{margin:0;font-family:sans-serif;background:#06120e;color:#fff}
 .top{background:linear-gradient(135deg,#00c853,#00e676);padding:24px 18px 40px;border-radius:0 0 32px 32px}
 .top h1{margin:0;font-size:22px;font-weight:800}
 .box{margin:-24px 16px 16px;background:#fff;border-radius:20px;padding:12px;display:flex;gap:8px}
@@ -38,7 +36,7 @@ body{margin:0;font-family:sans-serif;background:#06120e;color:#fff}
 .score{font-size:28px;font-weight:800;text-align:center;margin:12px 0}
 .badge{background:#00e676;color:#0a2e22;font-weight:800;border-radius:999px;padding:6px 14px;display:inline-block}
 </style></head><body>
-<div class=top><h1>Dieng Predict V13 PREMIUM</h1><p>V11 Mercato 2026 - Belle Icone</p></div>
+<div class=top><h1>Dieng Predict V13 PREMIUM</h1><p>V11 Mercato 2026 - Belle Icone Verte</p></div>
 <div class=box>
 <input id=a value=Barcelona><span style=color:#0a2e22;font-weight:800>VS</span><input id=b value="Aston Villa">
 <button onclick="go()">GO</button>
@@ -50,8 +48,5 @@ body{margin:0;font-family:sans-serif;background:#06120e;color:#fff}
 </div>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}
-function go(){
- let A=document.getElementById('a').value; let B=document.getElementById('b').value;
- document.getElementById('s').innerText=A+' 2 - 1 '+B;
-}
+function go(){let A=document.getElementById('a').value;let B=document.getElementById('b').value;document.getElementById('s').innerText=A+' 2 - 1 '+B;}
 </script></body></html>"""
