@@ -1,9 +1,9 @@
-import os, requests, random
+import os
 from flask import Flask
 import telebot
 from threading import Thread
 
-TOKEN = os.environ.get("BOT_TOKEN")
+TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
@@ -27,7 +27,7 @@ def get_real_stats(e1,e2):
     att1, def1, info1, inj1 = d1
     att2, def2, info2, inj2 = d2
     total = (att1+att2)/2
-    return f"🏆 {e1} vs {e2}\n📍 STADE: {info1} vs {info2}\n🤕 BLESSURES: {inj1} / {inj2}\n📊 Over 2.5: {50+int(total/2)}% - BTTS: {40+int(min(att1,att2)/2)}%\n💡 SAFE: {e1 if att1>att2 else e2} ou Nul"
+    return f"🏆 {e1} vs {e2}\n📍 {info1} vs {info2}\n🤕 {inj1} / {inj2}\n📊 Over 2.5: {50+int(total/2)}% - BTTS: {40+int(min(att1,att2)/2)}%\n💡 SAFE: {e1 if att1>att2 else e2} ou Nul"
 
 @bot.message_handler(func=lambda m: "vs" in m.text.lower())
 def vs(m):
@@ -49,5 +49,5 @@ def run_bot():
 Thread(target=run_bot).start()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.getenv("PORT", "10000"))
     app.run(host="0.0.0.0", port=port)
