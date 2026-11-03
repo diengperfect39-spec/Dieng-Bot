@@ -1,10 +1,10 @@
 import os
-from flask import import os
 from flask import Flask
 import threading
 import time
 
 app = Flask(__name__)
+
 @app.route('/')
 def home():
     return "Bot Dieng is alive!"
@@ -15,11 +15,7 @@ def run_flask():
 
 threading.Thread(target=run_flask, daemon=True).start()
 
-import asyncio
-print("Démarrage du bot...")
-
-# Boucle pour garder le bot actif
-alors = True
-while alors:
+print("Demarrage du bot...")
+while True:
     print("Bot en attente...")
     time.sleep(60)
