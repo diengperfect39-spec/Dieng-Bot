@@ -20,7 +20,8 @@ def get_real_stats(e1,e2):
         "aston villa": (81, 77, "Watkins 20 buts", "Mings"),
         "dortmund": (84, 76, "Guirassy 22 buts", "Adeyemi"),
     }
-    k1 = e1.lower(); k2 = e2.lower()
+    k1 = e1.lower()
+    k2 = e2.lower()
     d1 = DB.get(next((k for k in DB if k in k1), "other"), (75,75,f"{e1} forme moyenne", "Ras"))
     d2 = DB.get(next((k for k in DB if k in k2), "other"), (75,75,f"{e2} forme moyenne", "Ras"))
     att1, def1, info1, inj1 = d1
@@ -32,13 +33,15 @@ def get_real_stats(e1,e2):
 def vs(m):
     try:
         a,b = m.text.split("vs")
-        e1=a.strip().title(); e2=b.strip().title()
+        e1=a.strip().title()
+        e2=b.strip().title()
         bot.send_message(m.chat.id, get_real_stats(e1,e2))
     except:
         bot.reply_to(m, "Tape: Villarreal vs PSG")
 
 @app.route('/')
-def h(): return "Dieng Live"
+def h():
+    return "Dieng Live"
 
 def run_bot():
     bot.infinity_polling()
