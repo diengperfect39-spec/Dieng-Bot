@@ -1,10 +1,23 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse,JSONResponse,Response
+import math
 app=FastAPI()
 @app.get('/manifest.json')
-def m():return JSONResponse({'name':'Dieng','start_url':'/'})
+def m():return JSONResponse({'name':'Dieng'})
 @app.get('/sw.js')
-def s():return Response("self.addEventListener('install',e=>self.skipWaiting())",media_type='application/javascript')
+def s():return Response('a',media_type='application/javascript')
+def hc(s):
+ h=0
+ for c in s:h=ord(c)+((h<<5)-h)
+ return abs(h)
+def ps(l,k):return(l**k*math.exp(-l))/math.factorial(k)
+def gt(n):h=hc(n);return{'av':0.6+(h%20)/10,'fo':0.85+(h%30)/100,'el':1650+(h%100)}
 @app.get('/',response_class=HTMLResponse)
 def home():
- h=[];h.append("<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Dieng V26</title><style>body{margin:0;font-family:system-ui;background:#06120e;color:#fff}.hd{background:#0a2e22;padding:10px;text-align:center}.hd h1{margin:0;font-size:11px;color:#00ff88}.tabs{display:flex;gap:4px;padding:6px;overflow:auto}.tab{padding:7px 10px;border-radius:20px;background:#10261e;color:#888;border:1px solid #00ff8830;font-size:11px;cursor:pointer;white-space:nowrap}.tab.a{background:#00ff88;color:#000;font-weight:900}.card{margin:6px;background:#10261e;border-radius:12px;padding:8px;border:1px solid #ffffff12;font-size:11px}.box{background:#0a2e22;border:1px solid #00ff8820;border-radius:7px;padding:6px;text-align:center}.box.c{border-color:#00ff88;background:#123829}.v1n2{background:linear-gradient(90deg,#00ff88,#00aaff);color:#000;padding:8px;border-radius:8px;text-align:center;font-weight:900}.sc{background:#123829;border:2px solid #00ff88;border-radius:10px;padding:8px;text-align:center;margin:6px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}.sec{display:none}.sec.a{display:block}.top{margin:6px;background:#10261e;border-radius:12px;padding:8px;border:1px solid #00ff8840}.inputs{display:flex;gap:4px}.inputs input{flex:1;background:#0f2a1e;border:1px solid #00ff8830;border-radius:7px;padding:8px;color:#fff;font-weight:700;text-align:center}.vs{background:#0a2e22;color:#00ff88;font-weight:900;border-radius:999px;padding:4px 7px}.btn{width:100%;background:#00ff88;color:#06120e;border:0;border-radius:7px;padding:9px;font-weight:900;cursor:pointer}</style></head><body><div class=hd><h1>Dieng V26 FOOT COMPLET</h1></div><div class=tabs><div class='tab a' onclick='sh(\"f\",this)'>Foot</div><div class=tab onclick='sh(\"b\",this)'>Basket</div><div class=tab onclick='sh(\"h\",this)'>Hockey</div><div class=tab onclick='sh(\"t\",this)'>Tennis</div><div class=tab onclick='sh(\"p\",this)'>Ping</div></div><div id=f class='sec a'><div class=top><div class=inputs><input id=fa value='AEK'><div class=vs>VS</div><input id=fb value='Real'></div><button class=btn onclick='gf()'>ANALYSER FOOTBALL</button></div><div class=card id=rf></div></div><div id=b class=sec><div class=top><div class=inputs><input id=ba value='Lakers'><div class=vs>VS</div><input id=bb value='Warriors'></div><button class=btn onclick='gb()'>BASKET Over/Under+Handicap+Total1&2</button></div><div class=card id=rb></div></div><div id=h class=sec><div class=top><div class=
+ A=gt('AEK');B=gt('Real');xa=round(A['av']*A['fo'],2);xb=round(B['av']*B['fo'],2);t=xa+xb;d=A['el']-B['el'];pA=1/(1+10**(-d/400));v1=round(pA*84,1);v2=round((1-pA)*84,1);sc=[]
+ for i in range(5):
+  for j in range(5):sc.append((f"{i}-{j}",ps(xa,i)*ps(xb,j)*100))
+ sc=sorted(sc,key=lambda x:x[1],reverse=True);s1,s2=sc[0],sc[1];pT=[ps(t,k) for k in range(8)];su=sum(pT);tP=[(i,p/su*100) for i,p in enumerate(pT)];bY=sum(ps(xa,i)*ps(xb,j)*100 for i in range(1,5) for j in range(1,5));bN=100-bY
+ def gp(g):return next((x[1] for x in tP if x[0]==g),0)
+ mu=[('1 But',gp(1)),('2 Buts',gp(2)),('3 Buts',gp(3)),('1-2',gp(1)+gp(2)),('2-3',gp(2)+gp(3)),('2-4',gp(2)+gp(3)+gp(4)),('Over 2.5',sum(p for g,p in tP if g>=3)),('Under 3.5',sum(p for g,p in tP if g<=3)),('BTTS Oui',bY),('BTTS Non',bN)];mu=sorted(mu,key=lambda x:x[1],reverse=True);co=round(4.5+t*1.4,1);tt=int(8+t*1.8);tc=int(2.5+t*0.8);fa=11+hc('A')%7;ca=round(2.2+hc('B')%3*0.5,1)
+ h=f"<body style='background:#06120e;color:#fff;font-family:system-ui;padding:10px'><h1 style='color:#00ff88;font-size:14px'>Dieng V26 FOOT COMPLET OK</h1><div style='background:#10261e;padding:10px
