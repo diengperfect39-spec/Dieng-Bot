@@ -57,8 +57,31 @@ def home():
  tc=int(2.5+t*0.8)
  fa=11+hc('A')%7
  ca=round(2.2+hc('B')%3*0.5,1)
- h=f"<body style='background:#06120e;color:#fff;font-family:system-ui;padding:10px'><h1 style='color:#00ff88'>Dieng V26 OK</h1><div style='background:#10261e;padding:10px;border-radius:10px'>V1 {v1}% NUL 16% V2 {v2}%<br>xG {xa}+{xb}={t}<br>Score {s1[0]} {s1[1]:.1f}% - {s2[0]} {s2[1]:.1f}%<br><br>"
+ h="<html><head><meta charset='utf-8'>"
+ h+="<meta name='viewport' content='width=device-width,initial-scale=1'>"
+ h+="<style>"
+ h+="body{margin:0;background:#06120e;color:#fff;font-family:system-ui;padding:8px}";
+ h+="h1{color:#00ff88;font-size:13px;text-align:center}";
+ h+=".card{background:#10261e;padding:10px;margin:8px 0;border-radius:12px;border:1px solid #ffffff12}";
+ h+=".v1n2{background:linear-gradient(90deg,#00ff88,#00aaff);color:#000;padding:10px;border-radius:10px;text-align:center;font-weight:900;font-size:13px}";
+ h+=".sc{background:#123829;border:2px solid #00ff88;border-radius:10px;padding:8px;text-align:center;margin:8px 0}";
+ h+=".grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}";
+ h+=".grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px}";
+ h+=".box{background:#0a2e22;border:1px solid #00ff8820;border-radius:8px;padding:8px;text-align:center;font-size:11px}";
+ h+=".box.c{border-color:#00ff88;background:#123829;font-weight:900}";
+ h+="</style></head><body>"
+ h+="<h1>Dieng V26 FOOT COMPLET BEAU</h1>"
+ h+=f"<div class=card><div class=v1n2>V1 {v1}% - NUL 16% - V2 {v2}%</div>"
+ h+=f"<div style='font-size:10px;background:#0f2a1e;padding:6px;border-radius:6px;margin:6px 0'>xG {xa}+{xb}={t:.2f}</div>"
+ h+=f"<div class=sc><b>2 SCORES EXACTS</b><br><b style='font-size:16px'>{s1[0]} {s1[1]:.1f}%</b> - <b style='font-size:16px'>{s2[0]} {s2[1]:.1f}%</b></div>"
+ h+="<b>Multi-Buts + Over/Under + BTTS</b><div class=grid>"
+ gr=""
+ best=mu[0][0]
  for n,p in mu:
-  h+=f"{n}: {p:.1f}%<br>"
- h+=f"<br>Corners ~{co}<br>Cartons ~{ca}<br>Fautes ~{fa}<br>Tirs Tot ~{tt}<br>Tirs Cadres ~{tc}</div></body>"
+  c=" c" if n==best else ""
+  gr+=f"<div class='box{c}'><b>{n}</b><br>{p:.1f}%"
+  gr+=f"{'<br>CONSEIL' if n==best else ''}</div>"
+ h+=gr+"</div>"
+ h+=f"<hr><b>Stats Avancees</b><div class=grid3><div class=box>Corners<br><b>~{co}</b></div><div class=box>Cartons<br><b>~{ca}</b></div><div class=box>Fautes<br><b>~{fa}</b></div></div><div class=grid><div class=box>Tirs Totaux<br><b>~{tt}</b></div><div class=box>Tirs Cadres<br><b>~{tc}</b></div></div></div>"
+ h+="</body></html>"
  return HTMLResponse(h)
