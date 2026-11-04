@@ -17,71 +17,103 @@ def gt(n):
  return{'av':0.6+(h%20)/10,'fo':0.85+(h%30)/100,'el':1650+(h%100)}
 @app.get('/',response_class=HTMLResponse)
 def home():
- A=gt('AEK')
- B=gt('Real')
- xa=round(A['av']*A['fo'],2)
- xb=round(B['av']*B['fo'],2)
- t=xa+xb
- d=A['el']-B['el']
- pA=1/(1+10**(-d/400))
- v1=round(pA*84,1)
- v2=round((1-pA)*84,1)
- sc=[]
- for i in range(5):
-  for j in range(5):
-   sc.append((f"{i}-{j}",ps(xa,i)*ps(xb,j)*100))
- sc=sorted(sc,key=lambda x:x[1],reverse=True)
- s1=sc[0]
- s2=sc[1]
- pT=[ps(t,k) for k in range(8)]
- su=sum(pT)
- tP=[(i,p/su*100) for i,p in enumerate(pT)]
- bY=sum(ps(xa,i)*ps(xb,j)*100 for i in range(1,5) for j in range(1,5))
- bN=100-bY
- def gp(g):
-  return next((x[1] for x in tP if x[0]==g),0)
- mu=[]
- mu.append(('1 But',gp(1)))
- mu.append(('2 Buts',gp(2)))
- mu.append(('3 Buts',gp(3)))
- mu.append(('1-2',gp(1)+gp(2)))
- mu.append(('2-3',gp(2)+gp(3)))
- mu.append(('2-4',gp(2)+gp(3)+gp(4)))
- mu.append(('Over 2.5',sum(p for g,p in tP if g>=3)))
- mu.append(('Under 3.5',sum(p for g,p in tP if g<=3)))
- mu.append(('BTTS Oui',bY))
- mu.append(('BTTS Non',bN))
- mu=sorted(mu,key=lambda x:x[1],reverse=True)
- co=round(4.5+t*1.4,1)
- tt=int(8+t*1.8)
- tc=int(2.5+t*0.8)
- fa=11+hc('A')%7
- ca=round(2.2+hc('B')%3*0.5,1)
  h="<html><head><meta charset='utf-8'>"
  h+="<meta name='viewport' content='width=device-width,initial-scale=1'>"
- h+="<style>"
- h+="body{margin:0;background:#06120e;color:#fff;font-family:system-ui;padding:8px}";
- h+="h1{color:#00ff88;font-size:13px;text-align:center}";
- h+=".card{background:#10261e;padding:10px;margin:8px 0;border-radius:12px;border:1px solid #ffffff12}";
- h+=".v1n2{background:linear-gradient(90deg,#00ff88,#00aaff);color:#000;padding:10px;border-radius:10px;text-align:center;font-weight:900;font-size:13px}";
- h+=".sc{background:#123829;border:2px solid #00ff88;border-radius:10px;padding:8px;text-align:center;margin:8px 0}";
- h+=".grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}";
- h+=".grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px}";
- h+=".box{background:#0a2e22;border:1px solid #00ff8820;border-radius:8px;padding:8px;text-align:center;font-size:11px}";
- h+=".box.c{border-color:#00ff88;background:#123829;font-weight:900}";
- h+="</style></head><body>"
- h+="<h1>Dieng V26 FOOT COMPLET BEAU</h1>"
- h+=f"<div class=card><div class=v1n2>V1 {v1}% - NUL 16% - V2 {v2}%</div>"
- h+=f"<div style='font-size:10px;background:#0f2a1e;padding:6px;border-radius:6px;margin:6px 0'>xG {xa}+{xb}={t:.2f}</div>"
- h+=f"<div class=sc><b>2 SCORES EXACTS</b><br><b style='font-size:16px'>{s1[0]} {s1[1]:.1f}%</b> - <b style='font-size:16px'>{s2[0]} {s2[1]:.1f}%</b></div>"
- h+="<b>Multi-Buts + Over/Under + BTTS</b><div class=grid>"
- gr=""
- best=mu[0][0]
- for n,p in mu:
-  c=" c" if n==best else ""
-  gr+=f"<div class='box{c}'><b>{n}</b><br>{p:.1f}%"
-  gr+=f"{'<br>CONSEIL' if n==best else ''}</div>"
- h+=gr+"</div>"
- h+=f"<hr><b>Stats Avancees</b><div class=grid3><div class=box>Corners<br><b>~{co}</b></div><div class=box>Cartons<br><b>~{ca}</b></div><div class=box>Fautes<br><b>~{fa}</b></div></div><div class=grid><div class=box>Tirs Totaux<br><b>~{tt}</b></div><div class=box>Tirs Cadres<br><b>~{tc}</b></div></div></div>"
- h+="</body></html>"
+ h+="<style>body{margin:0;background:#06120e;color:#fff;"
+ h+="font-family:system-ui;padding:6px}h1{color:#00ff88;font-size:11px;"
+ h+="text-align:center}.tabs{display:flex;gap:4px;overflow:auto;padding:6px}"
+ h+=".tab{padding:7px 10px;border-radius:20px;background:#10261e;color:#888;"
+ h+="border:1px solid #00ff8830;font-size:10px;cursor:pointer}"
+ h+=".tab.a{background:#00ff88;color:#000;font-weight:900}"
+ h+=".card{background:#10261e;padding:8px;margin:6px 0;border-radius:12px;"
+ h+="border:1px solid #ffffff12;font-size:11px}.top{background:#10261e;"
+ h+="border:1px solid #00ff8840;border-radius:12px;padding:8px;margin:6px}"
+ h+=".inputs{display:flex;gap:4px}.inputs input{flex:1;background:#0f2a1e;"
+ h+="border:1px solid #00ff8830;border-radius:7px;padding:8px;color:#fff;"
+ h+="text-align:center;font-weight:700}.vs{background:#0a2e22;color:#00ff88;"
+ h+="font-weight:900;border-radius:999px;padding:4px 7px}.btn{width:100%;"
+ h+="background:#00ff88;color:#06120e;border:0;border-radius:7px;padding:9px;"
+ h+="font-weight:900;cursor:pointer}.v1n2{background:linear-gradient(90deg,#00ff88,#00aaff);"
+ h+="color:#000;padding:8px;border-radius:8px;text-align:center;font-weight:900}"
+ h+=".sc{background:#123829;border:2px solid #00ff88;border-radius:10px;"
+ h+="padding:8px;text-align:center;margin:6px 0}.grid{display:grid;"
+ h+="grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}.grid3{display:grid;"
+ h+="grid-template-columns:1fr 1fr 1fr;gap:4px}.box{background:#0a2e22;"
+ h+="border:1px solid #00ff8820;border-radius:7px;padding:6px;text-align:center;"
+ h+="font-size:10px}.box.c{border-color:#00ff88;background:#123829;font-weight:900}"
+ h+=".sec{display:none}.sec.a{display:block}</style></head><body>"
+ h+="<h1>Dieng V26 FOOT + BASKET + HOCKEY + TENNIS + PING</h1>"
+ h+="<div class=tabs><div class='tab a' onclick='sh(\"f\",this)'>Foot</div>"
+ h+="<div class=tab onclick='sh(\"b\",this)'>Basket</div>"
+ h+="<div class=tab onclick='sh(\"h\",this)'>Hockey</div>"
+ h+="<div class=tab onclick='sh(\"t\",this)'>Tennis</div>"
+ h+="<div class=tab onclick='sh(\"p\",this)'>Ping</div></div>"
+ h+="<div id=f class='sec a'><div class=top><div class=inputs>"
+ h+="<input id=fa value='AEK'><div class=vs>VS</div>"
+ h+="<input id=fb value='Real'></div>"
+ h+="<button class=btn onclick='gf()'>ANALYSER FOOTBALL</button></div>"
+ h+="<div class=card id=rf>Entre AEK vs Real et clique ANALYSER</div></div>"
+ h+="<div id=b class=sec><div class=top><div class=inputs>"
+ h+="<input id=ba value='Lakers'><div class=vs>VS</div>"
+ h+="<input id=bb value='Warriors'></div>"
+ h+="<button class=btn onclick='gb()'>BASKET Over/Under+Handicap+Total</button></div>"
+ h+="<div class=card id=rb></div></div>"
+ h+="<div id=h class=sec><div class=top><div class=inputs>"
+ h+="<input id=ha value='Leafs'><div class=vs>VS</div>"
+ h+="<input id=hb value='Oilers'></div>"
+ h+="<button class=btn onclick='gh()'>HOCKEY</button></div>"
+ h+="<div class=card id=rh></div></div>"
+ h+="<div id=t class=sec><div class=top><div class=inputs>"
+ h+="<input id=ta value='Alcaraz'><div class=vs>VS</div>"
+ h+="<input id=tb value='Sinner'></div>"
+ h+="<button class=btn onclick='gt()'>TENNIS</button></div>"
+ h+="<div class=card id=rt></div></div>"
+ h+="<div id=p class=sec><div class=top><div class=inputs>"
+ h+="<input id=pa value='Fan'><div class=vs>VS</div>"
+ h+="<input id=pb value='Hari'></div>"
+ h+="<button class=btn onclick='gp()'>PING</button></div>"
+ h+="<div class=card id=rp></div></div>"
+ h+="<script>function sh(id,el){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('a'));"
+ h+="document.querySelectorAll('.tab').forEach(t=>t.classList.remove('a'));"
+ h+="document.getElementById(id).classList.add('a');el.classList.add('a')}"
+ h+="function hc(s){let h=0;for(let i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);return Math.abs(h)}"
+ h+="function fc(n){if(n<=1)return 1;let r=1;for(let i=2;i<=n;i++)r*=i;return r}"
+ h+="function ps(l,k){return Math.pow(l,k)*Math.exp(-l)/fc(k)}"
+ h+="function gtn(n){let h=hc(n);return{avg:0.6+(h%20)/10,fo:0.85+(h%30)/100,elo:1650+(h%100)}}"
+ h+="function gf(){let A=gtn(fa.value),B=gtn(fb.value),sd=hc(fa.value+fb.value),xgA=+(A.avg*A.fo).toFixed(2),"
+ h+="xgB=+(B.avg*B.fo).toFixed(2),tot=xgA+xgB,d=(A.elo-B.elo)+(A.fo-B.fo)*100,pA=1/(1+Math.pow(10,-d/400)),"
+ h+="v1=(pA*84).toFixed(1),v2=((1-pA)*84).toFixed(1),sc=[];for(let i=0;i<=4;i++)for(let j=0;j<=4;j++)"
+ h+="sc.push({s:i+'-'+j,p:ps(xgA,i)*ps(xgB,j)*100});sc.sort((a,b)=>b.p-a.p);let s1=sc[0],s2=sc[1],pT=[];"
+ h+="for(let k=0;k<=7;k++)pT[k]=ps(tot,k);let sum=pT.reduce((a,b)=>a+b,0),tP=pT.map((p,i)=>({g:i,pr:p/sum*100})),bY=0;"
+ h+="for(let i=1;i<=4;i++)for(let j=1;j<=4;j++)bY+=ps(xgA,i)*ps(xgB,j)*100;let bN=100-bY,mu=[];"
+ h+="mu.push({n:'1 But',p:tP[1]?.pr||0});mu.push({n:'2 Buts',p:tP[2]?.pr||0});mu.push({n:'3 Buts',p:tP[3]?.pr||0});"
+ h+="mu.push({n:'1-2',p:(tP[1]?.pr||0)+(tP[2]?.pr||0)});mu.push({n:'2-3',p:(tP[2]?.pr||0)+(tP[3]?.pr||0)});"
+ h+="mu.push({n:'2-4',p:(tP[2]?.pr||0)+(tP[3]?.pr||0)+(tP[4]?.pr||0)});"
+ h+="mu.push({n:'Over 2.5',p:tP.filter(x=>x.g>=3).reduce((a,b)=>a+b.pr,0)});"
+ h+="mu.push({n:'Under 3.5',p:tP.filter(x=>x.g<=3).reduce((a,b)=>a+b.pr,0)});mu.push({n:'BTTS Oui',p:bY});"
+ h+="mu.push({n:'BTTS Non',p:bN});mu.sort((a,b)=>b.p-a.p);let best=mu[0].n,gr='';"
+ h+="mu.forEach(r=>{let cb=r.n==best?' c':'';gr+='<div class=\"box'+cb+'\"><b>'+r.n+'</b><br>'+r.p.toFixed(1)+'%'+(cb?' CONSEIL':'')+'</div>'});"
+ h+="let cor=(4.5+tot*1.4).toFixed(1),tt=(8+tot*1.8).toFixed(0),tc=(2.5+tot*0.8).toFixed(0),fa=(11+sd%7).toFixed(0),"
+ h+="ca=(2.2+sd%3*0.5).toFixed(1);rf.innerHTML='<div class=v1n2>V1 '+v1+'% - NUL 16% - V2 '+v2+'%</div><div style=font-size:10px;"
+ h+="background:#0f2a1e;padding:5px;border-radius:6px>Equipes '+fa.value+' vs '+fb.value+'<br>xG '+xgA+'+'+xgB+'='+tot.toFixed(2)+'</div>'"
+ h+="+ '<div class=sc><b>2 SCORES</b><br><b>'+s1.s+' '+s1.p.toFixed(1)+'%</b> - <b>'+s2.s+' '+s2.p.toFixed(1)+'%</b></div><b>Multi+Over+BTTS</b><div class=grid>'+gr+'</div><hr>'"
+ h+="+ '<b>Stats</b><div class=grid3><div class=box>Corners<br>~'+cor+'</div><div class=box>Cartons<br>~'+ca+'</div><div class=box>Fautes<br>~'+fa+'</div></div>'"
+ h+="+ '<div class=grid><div class=box>Tirs Tot<br>~'+tt+'</div><div class=box>Tirs Cadres<br>~'+tc+'</div></div>'}"
+ h+="function gb(){let a=ba.value,b=bb.value,s=hc(a+b),pA=55+s%10,pB=100-pA;rb.innerHTML='<div class=v1n2>V1 '+pA+'% - V2 '+pB+'%</div>'"
+ h+="+ '<b>Over/Under</b><div class=grid><div class=\"box c\">Over 215.5 58%</div><div class=box>Under 215.5 42%</div></div>'"
+ h+="+ '<b>Handicap</b><div class=grid><div class=box>'+a+' -4.5 '+(pA-5)+'%</div><div class=box>'+b+' +4.5 '+(pB+5)+'%</div></div>'"
+ h+="+ '<b>Total 1&2</b><div class=grid><div class=box>Total '+a+' Over 108.5 56%</div><div class=box>Total '+b+' Over 107.5 53%</div></div>'}"
+ h+="function gh(){let a=ha.value,b=hb.value,pA=48,pB=34;rh.innerHTML='<div class=v1n2>V1 '+pA+'% - NUL '+(100-pA-pB)+'% - V2 '+pB+'%</div>'"
+ h+="+ '<b>Over/Under</b><div class=grid><div class=\"box c\">Over 5.5 62%</div><div class=box>Under 5.5 38%</div></div>'"
+ h+="+ '<b>Handicap</b><div class=grid><div class=box>'+a+' -1.5 38%</div><div class=box>'+b+' +1.5 61%</div></div>'"
+ h+="+ '<b>Total 1&2</b><div class=grid><div class=box>Total '+a+' Over 2.5 58%</div><div class=box>Total '+b+' Over 2.5 52%</div></div>'}"
+ h+="function gt(){let a=ta.value,b=tb.value,pA=57;rt.innerHTML='<div class=v1n2>V1 '+pA+'% - V2 '+(100-pA)+'%</div>'"
+ h+="+ '<b>Total Jeux</b><div class=grid><div class=\"box c\">Over 22.5 59%</div><div class=box>Under 22.5 40%</div></div>'"
+ h+="+ '<b>Handicap</b><div class=grid><div class=box>'+a+' -2.5 54%</div><div class=box>'+b+' +2.5 45%</div></div>'"
+ h+="+ '<b>Total 1&2</b><div class=grid><div class=box>Total '+a+' Over 12.5 55%</div><div class=box>Total '+b+' Over 11.5 51%</div></div>'}"
+ h+="function gp(){let a=pa.value,b=pb.value,pA=54;rp.innerHTML='<div class=v1n2>V1 '+pA+'% - V2 '+(100-pA)+'%</div>'"
+ h+="+ '<b>Total Points</b><div class=grid><div class=\"box c\">Over 75.5 57%</div><div class=box>Under 75.5 42%</div></div>'"
+ h+="+ '<b>Handicap</b><div class=grid><div class=box>'+a+' -2.5 52%</div><div class=box>'+b+' +2.5 47%</div></div>'"
+ h+="+ '<b>Total 1&2</b><div class=grid><div class=box>Total '+a+' Over 38.5 54%</div><div class=box>Total '+b+' Over 35.5 51%</div></div>'}"
+ h+="</script></body></html>"
  return HTMLResponse(h)
