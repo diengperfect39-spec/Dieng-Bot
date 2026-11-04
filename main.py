@@ -1,14 +1,52 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse, Response
+
 app = FastAPI()
 
-HTML_PAGE = """<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dieng V18 ULTRA</title><style>body{background:#0a0e13;color:#fff;font-family:Arial;padding:10px} .header{background:linear-gradient(90deg,#00ff88,#00aaff);padding:14px;border-radius:12px;text-align:center;color:#000;font-weight:bold} .tab{padding:10px 14px;border-radius:20px;background:#1e222b;color:#888;border:1px solid #333;display:inline-block;margin:3px;cursor:pointer} .tab.active{background:#00ff88;color:#000} .card{background:#151a22;border:1px solid #2a2e38;border-radius:14px;padding:14px;margin-top:10px} input{width:100%;padding:11px;border-radius:10px;border:1px solid #333;background:#1e222b;color:#fff;margin:4px 0} .btn{width:100%;padding:13px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:bold;margin-top:8px} .badge{padding:5px 10px;border-radius:14px;font-size:11px;margin:2px;display:inline-block;font-weight:bold} .bg-green{background:#00ff8833;color:#00ff88;border:1px solid #00ff88} .bg-blue{background:#00aaff33;color:#00aaff;border:1px solid #00aaff} .bg-yellow{background:#ffcc0033;color:#ffcc00;border:1px solid #ffcc00} .box{background:#1e222b;border:1px solid #2a2e38;border-radius:10px;padding:9px;text-align:center;margin:4px} .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px} .title{color:#00ff88;font-weight:bold;margin:12px 0 5px 0;border-left:3px solid #00ff88;padding-left:7px;font-size:13px}</style></head><body><div class="header">Dieng Predict V18 ULTRA - PRO REAL STATS</div><div style="margin:10px 0"><div class="tab active" onclick="show('foot')">Football</div><div class="tab" onclick="show('basket')">Basket</div><div class="tab" onclick="show('tennis')">Tennis</div><div class="tab" onclick="show('hockey')">Hockey</div><div class="tab" onclick="show('ping')">Tennis Table</div></div><div id="foot" class="sec"><div class="card"><b>Football - Forme + Perf Réelle</b><input id="fa" value="AEK Athenes"><input id="fb" value="Real Madrid"><button class="btn" onclick="foot()">ANALYSER FOOTBALL COMPLET</button><div id="rfoot"></div></div></div><div id="basket" class="sec" style="display:none"><div class="card"><b>Basket - Stats NBA</b><input id="ba" value="Lakers"><input id="bb" value="Warriors"><button class="btn" onclick="basket()">ANALYSER BASKET</button><div id="rbasket"></div></div></div><div id="tennis" class="sec" style="display:none"><div class="card"><b>Tennis - Stats ATP</b><input id="ta" value="Alcaraz"><input id="tb" value="Sinner"><button class="btn" onclick="tennis()">ANALYSER TENNIS</button><div id="rtennis"></div></div></div><div id="hockey" class="sec" style="display:none"><div class="card"><b>Hockey Glace - NHL</b><input id="ha" value="Maple Leafs"><input id="hb" value="Oilers"><button class="btn" onclick="hockey()">ANALYSER HOCKEY</button><div id="rhockey"></div></div></div><div id="ping" class="sec" style="display:none"><div class="card"><b>Tennis Table - ITTF</b><input id="pa" value="Fan Zhendong"><input id="pb" value="Harimoto"><button class="btn" onclick="ping()">ANALYSER PING PONG</button><div id="rping"></div></div></div><script>function show(id){document.querySelectorAll('.sec').forEach(s=>s.style.display='none');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).style.display='block';event.target.classList.add('active');} var FDB={"real madrid":{forme:1.18,elo:1915,but:2.15,corners:6.2,cartons:1.8,tirs:5.8,fautes:11.5,poss:58},"aek athenes":{forme:0.83,elo:1620,but:1.05,corners:4.1,cartons:2.6,tirs:3.2,fautes:14.2,poss:42}};function getF(n){let k=n.toLowerCase().trim();return FDB[k]||{forme:0.95,elo:1650,but:1.35,corners:4.5,cartons:2.2,tirs:4.0,fautes:12.5,poss:50};}function foot(){let a=document.getElementById('fa').value,b=document.getElementById('fb').value,A=getF(a),B=getF(b);let d=(A.elo-B.elo)+(A.forme-B.forme)*100;let pA=1/(1+Math.pow(10,-d/400));let pB=1-pA;let v1=(pA*84).toFixed(1),v2=(pB*84).toFixed(1),nul=(16).toFixed(1);let xgA=(A.but*A.forme).toFixed(2),xgB=(B.but*B.forme).toFixed(2),xgT=(parseFloat(xgA)+parseFloat(xgB)).toFixed(2);let cT=(A.corners*A.forme + B.corners*B.forme).toFixed(1);let tirT=(A.tirs*A.forme + B.tirs*B.forme).toFixed(1);let cartT=(A.cartons+B.cartons).toFixed(1);let fautT=(A.fautes+B.fautes).toFixed(0);function probOver(xg,line){let p=1-Math.exp(-xg*0.9)*(1+xg*0.9);if(line==0.5)return 96;if(line==1.5)return Math.min(92,(xg*38).toFixed(0));if(line==2.5)return Math.min(88,(xg*30).toFixed(0));if(line==3.5)return Math.min(65,(xg*20).toFixed(0));if(line==4.5)return Math.min(42,(xg*12).toFixed(0));return 50;} let h=`<div style="margin-top:10px"><span class="badge bg-green">V1 ${v1}%</span><span class="badge bg-yellow">NUL ${nul}%</span><span class="badge bg-blue">V2 ${v2}%</span><div class="title">MULTI BUTS - Basé sur forme xG ${xgT}</div><div class="grid2"><div class="box"><b>Over 0.5: ${probOver(xgT,0.5)}%</b><span>Toujours</span></div><div class="box"><b>Over 1.5: ${probOver(xgT,1.5)}%</b><span>xG ${xgT}</span></div><div class="box"><b>Over 2.5: ${probOver(xgT,2.5)}%</b><span>Conseil principal</span></div><div class="box"><b>Over 3.5: ${probOver(xgT,3.5)}%</b><span>Match ouvert</span></div></div><div class="box"><b>Over 4.5: ${probOver(xgT,4.5)}% - BTTS: ${(55+parseFloat(xgT)*8).toFixed(0)}%</b><span>Multi buts extrême</span></div><div class="title">CORNERS / CARTONS / TIRS / FAUTES</div><div class="grid2"><div class="box"><b>${cT}</b><span>Total Corners</span></div><div class="box"><b>${cartT}</b><span>Total Cartons</span></div><div class="box"><b>${tirT}</b><span>Tirs Cadrés Total</span></div><div class="box"><b>${fautT}</b><span>Total Fautes</span></div></div><div class="box"><b>${xgA} - ${xgB} xG | ${A.poss}% - ${B.poss}% Poss</b><span>Forme ${A.forme} vs ${B.forme}</span></div></div>`;document.getElementById('rfoot').innerHTML=h;}function basket(){let a=document.getElementById('ba').value,b=document.getElementById('bb').value;let tot=(215+Math.random()*25).toFixed(1);let h=`<div style="margin-top:10px"><div class="title">BASKET - Vrai marché pari</div><div class="grid2"><div class="box"><b>V1 ${ (48+Math.random()*8).toFixed(1)}%</b><span>${a}</span></div><div class="box"><b>V2 ${ (48+Math.random()*8).toFixed(1)}%</b><span>${b}</span></div><div class="box"><b>Over 220.5: 54%</b><span>Total ${tot} pts</span></div><div class="box"><b>Handicap -5.5</b><span>Spread</span></div><div class="box"><b>Rebounds: 45.2</b><span>Total rebonds</span></div><div class="box"><b>3pts: 24.5</b><span>3 points marqués</span></div></div></div>`;document.getElementById('rbasket').innerHTML=h;}function tennis(){let a=document.getElementById('ta').value,b=document.getElementById('tb').value;let h=`<div style="margin-top:10px"><div class="title">TENNIS - Stats officielles ATP</div><div class="grid2"><div class="box"><b>V1 56.2%</b><span>${a}</span></div><div class="box"><b>V2 43.8%</b><span>${b}</span></div><div class="box"><b>Aces: 12.5</b><span>Total aces</span></div><div class="box"><b>Over 22.5 jeux: 58%</b><span>Total jeux</span></div><div class="box"><b>2-1 Set: 32%</b><span>Score exact</span></div><div class="box"><b>Double fautes: 3.2</b><span></span></div></div></div>`;document.getElementById('rtennis').innerHTML=h;}function hockey(){let h=`<div style="margin-top:10px"><div class="title">HOCKEY GLACE - NHL</div><div class="grid2"><div class="box"><b>Total 5.5 buts: Over 62%</b><span>Buts match</span></div><div class="box"><b>Tirs: 62.5</b><span>Tirs au but</span></div><div class="box"><b>Pénalités: 8.5 min</b><span>Minutes pénalité</span></div><div class="box"><b>Powerplay: 1.2 buts</b><span>Buts PP</span></div></div></div>`;document.getElementById('rhockey').innerHTML=h;}function ping(){let h=`<div style="margin-top:10px"><div class="title">TENNIS TABLE - ITTF</div><div class="grid2"><div class="box"><b>Total Points: Over 78.5</b><span>Points match</span></div><div class="box"><b>3-1 Set: 38%</b><span>Score exact</span></div><div class="box"><b>Over 4.5 sets: 42%</b><span>Sets totaux</span></div></div></div>`;document.getElementById('rping').innerHTML=h;}</script></body></html>"""
+HTML_PAGE = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dieng V18 Multi-Buts Réel</title>
+<style>
+body{background:#0a0e13;color:#fff;font-family:Arial;padding:10px;padding-bottom:80px}
+.header{background:linear-gradient(90deg,#00ff88,#00aaff);padding:14px;border-radius:12px;text-align:center;color:#000;font-weight:bold}
+.tab{padding:10px 14px;border-radius:20px;background:#1e222b;color:#888;border:1px solid #333;display:inline-block;margin:3px;cursor:pointer}
+.tab.active{background:#00ff88;color:#000;font-weight:bold}
+.card{background:#151a22;border:1px solid #2a2e38;border-radius:14px;padding:14px;margin-top:10px}
+input{width:100%;padding:11px;border-radius:10px;border:1px solid #333;background:#1e222b;color:#fff;margin:4px 0}
+.btn{width:100%;padding:13px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:bold;margin-top:8px}
+.box{background:#1e222b;border:1px solid #2a2e38;border-radius:10px;padding:10px;text-align:center;margin:4px}
+.box b{display:block;color:#00ff88;font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.title{color:#00ff88;font-weight:bold;margin:12px 0 5px 0;border-left:3px solid #00ff88;padding-left:8px;font-size:13px}
+.form{font-size:11px;color:#aaa;margin:3px 0}
+.prob{font-size:12px;background:#00ff8822;padding:4px 8px;border-radius:10px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="header">Dieng Predict V18 - MULTI-BUTS 0-2 / 1-3</div>
+<div style="margin:10px 0">
+<div class="tab active" onclick="show('foot')">Football</div>
+<div class="tab" onclick="show('basket')">Basket</div>
+<div class="tab" onclick="show('tennis')">Tennis</div>
+<div class="tab" onclick="show('hockey')">Hockey</div>
+<div class="tab" onclick="show('ping')">Tennis Table</div>
+</div>
 
-@app.get('/manifest.json')
-def manifest(): return JSONResponse({'name':'Dieng V18 ULTRA'})
+<div id="foot" class="sec"><div class="card">
+<b>Football - 5 derniers matchs + Forme</b>
+<input id="fa" value="AEK Athenes">
+<input id="fb" value="Real Madrid">
+<button class="btn" onclick="foot()">ANALYSER - MULTI-BUTS RÉEL</button>
+<div id="rfoot"></div>
+</div></div>
 
-@app.get('/sw.js')
-def sw(): return Response(content="self.addEventListener('fetch',e=>{});", media_type="application/javascript")
+<div id="basket" class="sec" style="display:none"><div class="card">
+<b>Basket</b><input id="ba" value="Lakers"><input id="bb" value="Warriors">
+<button class="btn" onclick="basket()">ANALYSER BASKET</button><div id="rbasket"></div>
+</div></div>
 
-@app.get('/', response_class=HTMLResponse)
-def home(): return HTMLResponse(content=HTML_PAGE)
+<div id="tennis" class="sec" style="display:none"><div class="card">
+<b>Tennis</b><input id="ta" value="Alcaraz"><input id="tb" value
